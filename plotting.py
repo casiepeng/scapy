@@ -16,3 +16,21 @@ else:
 
 ip = socket.gethostbyname(hostname)
 
+def find_and_plot_coordinates(ip):
+    
+    # tool for finding latitutde and longitude of ip address
+    url = f"http://dazzlepod.com/ip/{ip}.json"
+    
+    # debugging the URLs
+    print(url)
+    response = requests.get(url)
+    data = response.json()
+    # making sure the wesbsite gave us lat and long
+    if 'latitude' in data and 'longitude' in data:
+        print(data['latitude'],data['longitude'])
+                         
+    # pausing for 2 seconds to make sure we don't get banned by 'dazzlepod.com'
+    time.sleep(SLEEP_SECONDS)
+            
+    #calls function to plot the lats and longs
+    plot_lat_long()
