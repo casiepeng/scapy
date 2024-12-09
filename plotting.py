@@ -40,6 +40,15 @@ for item in res.get_trace()[ip]:
 # plots 3 coordinates onto Google Maps - hardcoded for in-class example
 def plot_lat_long(lats, longs):
 
+    #initializing
+    url = f"http://dazzlepod.com/ip/me.json"
+    response = requests.get(url)
+    data = response.json()
+    lat = data['latitude']
+    long = data['longitude']
+    gmap = gmplot.GoogleMapPlotter(lat, long, 3)
+    gmap.marker(lat, long, color='red', label='1')
+
     # the initial lat long and the zoom levels for the map (3 is zoomed out)
     #colors: red, orange, yellow, green, blue
    
@@ -57,7 +66,6 @@ def plot_lat_long(lats, longs):
         else:
             the_color = 'b'
 
-        gmap = gmplot.GoogleMapPlotter(lats[i], longs[i], 3)
         gmap.marker(lats[i], longs[i], color=the_color, label=str(i))
 
     #Handle path issue for windows, so that marker images can optionally be found using gmplot
@@ -74,15 +82,6 @@ def plot_lat_long(lats, longs):
     
     # opening the HTML via default browser
     webbrowser.open("file:///" + cwd +"/traceroute.html")
-
-def plot_initial():
-    url = f"http://dazzlepod.com/ip/me.json"
-    response = requests.get(url)
-    data = response.json()
-    lat = data['latitude']
-    long = data['longitude']
-    gmap = gmplot.GoogleMapPlotter(lat, long, 3)
-    gmap.marker(lat, long, color='red', label='1')
 
 def find_and_plot_coordinates(ips):
     
@@ -109,7 +108,7 @@ def find_and_plot_coordinates(ips):
     time.sleep(SLEEP_SECONDS)
        
     #calls function to plot the lats and longs
-    plot_initial()
+    
     plot_lat_long(lat, long)
 
 
