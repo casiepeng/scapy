@@ -92,8 +92,6 @@ def plot_lat_long(lats, longs):
     gmap.scatter( lats, longs, '#FF00FF', 
                               size = 40000, marker = False) 
 
-        
-
     # get the currentdirectory
     cwd = os.getcwd()
     
@@ -102,3 +100,27 @@ def plot_lat_long(lats, longs):
     
     # opening the HTML via default browser
     webbrowser.open("file:///" + cwd +"/traceroute.html")
+
+#will need to slow down the request frequency from 'dazzlepod.com' to find latitude and longitude
+SLEEP_SECONDS = 2;
+#hostname to traceroute to, hardcoded for in-class example
+#default website
+hostname = 'www.aubg.bg'
+
+# converting request hostname into IP address
+ip = socket.gethostbyname(hostname)
+
+# a good explanation of how traceroute works: https://www.youtube.com/watch?v=G05y9UKT69s
+# add maxttl=100 or more if you want to traceroute even deeper.
+#'res' -- results from traceroute 
+res, _ = traceroute(ip,maxttl=64,verbose = 0)
+
+# will store retrieved IPs here.
+ips = []
+
+# going through the traceroute results and extracting IP addresses into the array
+for item in res.get_trace()[ip]:
+    ips.append(res.get_trace()[ip][item][0])
+    
+#find coordinates and plot them   
+find_and_plot_coordinates()
