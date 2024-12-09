@@ -69,7 +69,7 @@ def plot_lat_long(lats, longs):
 
 
     #colors: red, orange, yellow, green, blue
-    for i in lats:
+    for i in range(len(lats)):
 
         the_color = 'red'
 
@@ -85,7 +85,7 @@ def plot_lat_long(lats, longs):
             the_color = 'blue'
 
         gmap = gmplot.GoogleMapPlotter(lats[i], longs[i], 3)
-        gmap.marker(lats[i], longs[i], color=the_color, label=''+i)
+        gmap.marker(lats[i], longs[i], color=the_color, label=str(i))
 
     
     #Handle path issue for windows, so that marker images can optionally be found using gmplot
