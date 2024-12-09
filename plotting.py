@@ -16,7 +16,7 @@ from gmplot import gmplot
 
 # Hostname input stuff
 if (len(sys.argv) != 2):
-    hostname = "bundesregierung.de"
+    hostname = "mn.gov"
 else:
     hostname = sys.argv[1]
 
