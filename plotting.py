@@ -98,7 +98,7 @@ def find_and_plot_coordinates(ips):
     # making sure the wesbsite gave us lat and long
     if 'latitude' in data and 'longitude' in data:
         coords = (data['latitude'], data['longitude']) # makes a set coordinate pair
-
+        print(coords)
         if coords not in unique_coords:
             unique_coords.add(coords)
             lat.append(data['latitude'])
