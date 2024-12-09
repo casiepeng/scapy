@@ -14,15 +14,14 @@ from scapy.layers.inet import traceroute
 # this is to plot our lat/long data onto Google Maps  https://pypi.org/project/gmplot/
 from gmplot import gmplot   
 
-
-
+# Hostname input stuff
 if (len(sys.argv) != 2):
     hostname = "mn.gov"
 else:
     hostname = sys.argv[1]
 
+# converts host to ip
 ip = socket.gethostbyname(hostname)
-ip = requests.get('https://api.ipify.org').text # USE THIS FOR INITIAL
 
 def find_and_plot_coordinates(ip):
     
