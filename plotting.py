@@ -58,7 +58,8 @@ def plot_initial():
     data = response.json()
     lat = data['latitude']
     long = data['longitutde']
-    gmplot.GoogleMapPlotter(lat, long, 3)
+    gmap = gmplot.GoogleMapPlotter(lat, long, 3)
+    gmap.marker(lat, long, color='red', label='1')
 
 
 
