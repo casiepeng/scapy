@@ -48,9 +48,6 @@ def plot_lat_long(lats, longs):
     long = data['longitude']
     gmap = gmplot.GoogleMapPlotter(lat, long, 3)
     gmap.marker(lat, long, color='red', label='1')
-
-    # the initial lat long and the zoom levels for the map (3 is zoomed out)
-    #colors: red, orange, yellow, green, blue
    
     for i in range (len(lats)):
         the_color = 'red'
@@ -72,8 +69,9 @@ def plot_lat_long(lats, longs):
     if ":\\" in gmap.coloricon:
         gmap.coloricon = gmap.coloricon.replace('/', '\\')
         gmap.coloricon = gmap.coloricon.replace('\\', '\\\\')
-     
-    gmap.scatter( lats, longs, '#FF00FF', 
+    
+    gmap.plot(lats, longs, color='b') 
+    gmap.scatter(lats, longs, '#FF00FF', 
                               size = 40000, marker = False) 
     # get the currentdirectory
     cwd = os.getcwd()
@@ -85,8 +83,8 @@ def plot_lat_long(lats, longs):
 
 def find_and_plot_coordinates(ips):
     unique_coords = set() # stores unique lat long pairs
-    lat = []
-    long = []  
+    lats = []
+    longs = []  
     
     for ip in ips:
 # tool for finding latitutde and longitude of ip address
@@ -104,18 +102,18 @@ def find_and_plot_coordinates(ips):
                 
                 if coords not in unique_coords:
                     unique_coords.add(coords)
-                    lat.append(data['latitude'])
-                    long.append(data['longitude'])
+                    lats.append(data['latitude'])
+                    longs.append(data['longitude'])
 
         else:
-            print(f"Failed to get data for IP: {IP}")
+            print(f"Failed to get data for IP: {ip}")
                          
     # pausing for 2 seconds to make sure we don't get banned by 'dazzlepod.com'
     time.sleep(SLEEP_SECONDS)
        
     #calls function to plot the lats and longs
-    if lat and long:
-        plot_lat_long(lat, long)
+    if lats and longs:
+        plot_lat_long(lats, longs)
     else:
         print("No valid coordinates to plot.")
 
