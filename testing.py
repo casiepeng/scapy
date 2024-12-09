@@ -112,64 +112,6 @@ def find_and_plot_coordinates(ips):
     plot_initial()
     plot_lat_long(lat, long)
 
-<<<<<<< HEAD
-def plot_initial():
-    url = f"http://dazzlepod.com/ip/me.json"
-    response = requests.get(url)
-    data = response.json()
-    lat = data['latitude']
-    long = data['longitutde']
-    gmap = gmplot.GoogleMapPlotter(lat, long, 3)
-    gmap.marker(lat, long, color='red', label='1')
-
-
-
-# plots 3 coordinates onto Google Maps - hardcoded for in-class example
-def plot_lat_long(lats, longs):
-   
-    # the initial lat long and the zoom levels for the map (3 is zoomed out)
-
-
-    #colors: red, orange, yellow, green, blue
-    for i in range(len(lats)):
-
-        the_color = 'red'
-
-        if i % 5 == 0:
-            the_color = 'red'
-        elif i % 5 == 1:
-            the_color = 'orange'
-        elif i % 5 == 2:
-            the_color = 'yellow'
-        elif i % 5 == 3:
-            the_color = 'green'
-        else:
-            the_color = 'blue'
-
-        gmap = gmplot.GoogleMapPlotter(lats[i], longs[i], 3)
-        gmap.marker(lats[i], longs[i], color=the_color, label=str(i))
-
-    
-    #Handle path issue for windows, so that marker images can optionally be found using gmplot
-    if ":\\" in gmap.coloricon:
-        gmap.coloricon = gmap.coloricon.replace('/', '\\')
-        gmap.coloricon = gmap.coloricon.replace('\\', '\\\\')
-    
-    # placing large dots on the lat longs
-    # for your homework you will pass in coordinates retrieved from dazzlepod. 
-    # for this in-class example, we will plot a hard-coded list of coordinates
-    
-    gmap.scatter( lats, longs, '#FF00FF', 
-                              size = 40000, marker = False) 
-    # get the currentdirectory
-    cwd = os.getcwd()
-    # saving the map as an HTML into the project directory
-    gmap.draw("traceroute.html")
-    
-    # opening the HTML via default browser
-    webbrowser.open("file:///" + cwd +"/traceroute.html")
-=======
->>>>>>> 55963044ecfe91147317757c6b6874886f14e1e8
 
 #will need to slow down the request frequency from 'dazzlepod.com' to find latitude and longitude
 SLEEP_SECONDS = 2;

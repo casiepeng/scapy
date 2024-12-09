@@ -20,8 +20,6 @@ from gmplot import gmplot
 # adding for arguments
 import sys 
 
-
-
 # plots 3 coordinates onto Google Maps - hardcoded for in-class example
 def plot_lat_long():
    
@@ -33,7 +31,6 @@ def plot_lat_long():
         gmap.coloricon = gmap.coloricon.replace('/', '\\')
         gmap.coloricon = gmap.coloricon.replace('\\', '\\\\')
         
-    
     # placing large dots on the lat longs
     # for your homework you will pass in coordinates retrieved from dazzlepod. 
     # for this in-class example, we will plot a hard-coded list of coordinates
@@ -41,8 +38,6 @@ def plot_lat_long():
     longs = [23.1000, 22.6000, 25.8000 ]
     gmap.scatter( lats, longs, '#FF00FF', 
                               size = 40000, marker = False) 
-
-        
 
     # get the currentdirectory
     cwd = os.getcwd()
@@ -52,7 +47,6 @@ def plot_lat_long():
     
     # opening the HTML via default browser
     webbrowser.open("file:///" + cwd +"/traceroute.html")
-
 
 # find the latitude and longitude 
 def find_and_plot_coordinates():
