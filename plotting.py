@@ -15,6 +15,7 @@ else:
     hostname = sys.argv[1]
 
 ip = socket.gethostbyname(hostname)
+ip = requests.get('https://api.ipify.org').text # USE THIS FOR INITIAL
 
 def find_and_plot_coordinates(ip):
     
@@ -32,14 +33,13 @@ def find_and_plot_coordinates(ip):
         print(data['latitude'],data['longitude'])
         lat.append(data['latitude'])
         long.append(data['longitude'])
-        
-        
                          
     # pausing for 2 seconds to make sure we don't get banned by 'dazzlepod.com'
     time.sleep(SLEEP_SECONDS)
             
     #calls function to plot the lats and longs
     plot_lat_long(lat, long)
+
 
 # plots 3 coordinates onto Google Maps - hardcoded for in-class example
 def plot_lat_long(lats, longs):
