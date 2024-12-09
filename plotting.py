@@ -66,7 +66,27 @@ def plot_initial():
 def plot_lat_long(lats, longs):
    
     # the initial lat long and the zoom levels for the map (3 is zoomed out)
-    gmap = gmplot.GoogleMapPlotter(42.0167, 23.1000, 3)
+
+
+    #colors: red, orange, yellow, green, blue
+    for i in lats:
+
+        the_color = 'red'
+
+        if i % 5 == 0:
+            the_color = 'red'
+        elif i % 5 == 1:
+            the_color = 'orange'
+        elif i % 5 == 2:
+            the_color = 'yellow'
+        elif i % 5 == 3:
+            the_color = 'green'
+        else:
+            the_color = 'blue'
+
+        gmap = gmplot.GoogleMapPlotter(lats[i], longs[i], 3)
+        gmap.marker(lats[i], longs[i], color=the_color, label=''+i)
+
     
     #Handle path issue for windows, so that marker images can optionally be found using gmplot
     if ":\\" in gmap.coloricon:
@@ -107,4 +127,4 @@ for item in res.get_trace()[ip]:
         pass
     
 #find coordinates and plot them   
-find_and_plot_coordinates()
+find_and_plot_coordinates(ips)
