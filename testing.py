@@ -16,7 +16,7 @@ from gmplot import gmplot
 
 # Hostname input stuff
 if (len(sys.argv) != 2):
-    hostname = "bundesregierung.de"
+    hostname = "mn.gov"
 else:
     hostname = sys.argv[1]
 
@@ -40,6 +40,15 @@ for item in res.get_trace()[ip]:
 # plots 3 coordinates onto Google Maps - hardcoded for in-class example
 def plot_lat_long(lats, longs):
 
+    #initializing
+    url = f"http://dazzlepod.com/ip/me.json"
+    response = requests.get(url)
+    data = response.json()
+    lat = data['latitude']
+    long = data['longitude']
+    gmap = gmplot.GoogleMapPlotter(lat, long, 3)
+    gmap.marker(lat, long, color='red', label='1')
+
     # the initial lat long and the zoom levels for the map (3 is zoomed out)
     #colors: red, orange, yellow, green, blue
    
@@ -57,8 +66,7 @@ def plot_lat_long(lats, longs):
         else:
             the_color = 'b'
 
-        gmap = gmplot.GoogleMapPlotter(lats[i], longs[i], 3)
-        gmap.marker(lats[i], longs[i], color=the_color, label=str(i))
+        gmap.marker(lats[i], longs[i], color=the_color, label=str(i + 2))
 
     #Handle path issue for windows, so that marker images can optionally be found using gmplot
     if ":\\" in gmap.coloricon:
@@ -75,27 +83,20 @@ def plot_lat_long(lats, longs):
     # opening the HTML via default browser
     webbrowser.open("file:///" + cwd +"/traceroute.html")
 
-def plot_initial():
-    url = f"http://dazzlepod.com/ip/me.json"
-    response = requests.get(url)
-    data = response.json()
-    lat = data['latitude']
-    long = data['longitude']
-    gmap = gmplot.GoogleMapPlotter(lat, long, 3)
-    gmap.marker(lat, long, color='red', label='1')
-
 def find_and_plot_coordinates(ips):
     
-    # tool for finding latitutde and longitude of ip address
-    url = f"http://dazzlepod.com/ip/{ip}.json"
-    
-    # debugging the URLs
-    print(url)
-    response = requests.get(url)
-    data = response.json()
     unique_coords = set() # stores unique lat long pairs
     lat = []
     long = []
+
+    for ip in ips:
+    # tool for finding latitutde and longitude of ip address
+        url = f"http://dazzlepod.com/ip/{ip}.json"
+
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+
     # making sure the wesbsite gave us lat and long
     if 'latitude' in data and 'longitude' in data:
         coords = (data['latitude'], data['longitude']) # makes a set coordinate pair
@@ -104,12 +105,14 @@ def find_and_plot_coordinates(ips):
             unique_coords.add(coords)
             lat.append(data['latitude'])
             long.append(data['longitude'])
+    else:
+        print(f"Failed to get data from IP: {ip}")
                          
     # pausing for 2 seconds to make sure we don't get banned by 'dazzlepod.com'
     time.sleep(SLEEP_SECONDS)
        
     #calls function to plot the lats and longs
-    plot_initial()
+    
     plot_lat_long(lat, long)
 
 
