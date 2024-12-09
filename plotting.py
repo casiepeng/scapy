@@ -72,7 +72,6 @@ def plot_lat_long(lats, longs):
     if ":\\" in gmap.coloricon:
         gmap.coloricon = gmap.coloricon.replace('/', '\\')
         gmap.coloricon = gmap.coloricon.replace('\\', '\\\\')
-        
     
     # placing large dots on the lat longs
     # for your homework you will pass in coordinates retrieved from dazzlepod. 
@@ -80,10 +79,8 @@ def plot_lat_long(lats, longs):
     
     gmap.scatter( lats, longs, '#FF00FF', 
                               size = 40000, marker = False) 
-
     # get the currentdirectory
     cwd = os.getcwd()
-    
     # saving the map as an HTML into the project directory
     gmap.draw("traceroute.html")
     
@@ -97,13 +94,17 @@ SLEEP_SECONDS = 2;
 # add maxttl=100 or more if you want to traceroute even deeper.
 #'res' -- results from traceroute 
 res, _ = traceroute(ip,maxttl=64,verbose = 0)
-
 # will store retrieved IPs here.
 ips = []
 
 # going through the traceroute results and extracting IP addresses into the array
 for item in res.get_trace()[ip]:
-    ips.append(res.get_trace()[ip][item][0])
+    try:
+        hopping_ip = res.get_trace()[ip][item][0]
+        if hopping_ip not in ips:
+            ips.append(hopping_ip)
+    except IndexError:
+        pass
     
 #find coordinates and plot them   
 find_and_plot_coordinates()
