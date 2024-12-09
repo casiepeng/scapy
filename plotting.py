@@ -26,13 +26,17 @@ def find_and_plot_coordinates(ip):
     print(url)
     response = requests.get(url)
     data = response.json()
+    unique_coords = set() # stores unique lat long pairs
     lat = []
     long = []
     # making sure the wesbsite gave us lat and long
     if 'latitude' in data and 'longitude' in data:
-        print(data['latitude'],data['longitude'])
-        lat.append(data['latitude'])
-        long.append(data['longitude'])
+        coords = (data['latitude'], data['longitude']) # makes a set coordinate pair
+
+        if coords not in unique_coords:
+            unique_coords.add(coords)
+            lat.append(data['latitude'])
+            long.append(data['longitude'])
                          
     # pausing for 2 seconds to make sure we don't get banned by 'dazzlepod.com'
     time.sleep(SLEEP_SECONDS)
