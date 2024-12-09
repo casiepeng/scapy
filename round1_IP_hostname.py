@@ -7,8 +7,6 @@ Created on Mar 1, 2020
 import sys
 from scapy.layers.inet import socket
 
-hostname = input("Please provide a hostname: ")
-
 if (len(sys.argv) != 2):
     hostname = "mn.gov"
 else:
