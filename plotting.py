@@ -38,7 +38,17 @@ def find_and_plot_coordinates(ip):
     time.sleep(SLEEP_SECONDS)
             
     #calls function to plot the lats and longs
+    plot_initial()
     plot_lat_long(lat, long)
+
+def plot_initial():
+    url = f"http://dazzlepod.com/ip/me.json"
+    response = requests.get(url)
+    data = response.json()
+    lat = data['latitude']
+    long = data['longitutde']
+    gmplot.GoogleMapPlotter(lat, long, 3)
+
 
 
 # plots 3 coordinates onto Google Maps - hardcoded for in-class example
