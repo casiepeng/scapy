@@ -4,27 +4,16 @@
 @PID: mzddie, casiepeng
 @assignment: Class Project
 """
-# this will allow this program to interpret JSON object. See example JSON:http://dazzlepod.com/ip/128.173.239.242.json
-import json
 
-# the tools needed to access a URL and get data.
-import requests
-
-# allows operations such opening a default browser at a given URL
-import webbrowser, os
-
-# for pausing our requests to a web service that takes IP and returns latitude,longitude
-import time
+import requests, time, json, os
+import webbrowser, sys
 
 # scapy is an extensive networking library for python. We are going to be using its 'traceroute()'
 from scapy.layers.inet import socket
 from scapy.layers.inet import traceroute
-
 # this is to plot our lat/long data onto Google Maps  https://pypi.org/project/gmplot/
 from gmplot import gmplot   
 
-# adding for arguments
-import sys 
 
 
 if (len(sys.argv) != 2):
