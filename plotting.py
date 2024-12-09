@@ -23,7 +23,21 @@ else:
 # converts host to ip
 ip = socket.gethostbyname(hostname)
 
-def find_and_plot_coordinates(ip):
+res, _ = traceroute(ip,maxttl=64,verbose = 0)
+# will store retrieved IPs here.
+ips = []
+
+# going through the traceroute results and extracting IP addresses into the array
+for item in res.get_trace()[ip]:
+    try:
+        hopping_ip = res.get_trace()[ip][item][0]
+        if hopping_ip not in ips:
+            ips.append(hopping_ip)
+    except IndexError:
+        pass
+
+
+def find_and_plot_coordinates(ips):
     
     # tool for finding latitutde and longitude of ip address
     url = f"http://dazzlepod.com/ip/{ip}.json"
@@ -46,7 +60,7 @@ def find_and_plot_coordinates(ip):
                          
     # pausing for 2 seconds to make sure we don't get banned by 'dazzlepod.com'
     time.sleep(SLEEP_SECONDS)
-            
+       
     #calls function to plot the lats and longs
     plot_initial()
     plot_lat_long(lat, long)
@@ -90,21 +104,5 @@ def plot_lat_long(lats, longs):
 #will need to slow down the request frequency from 'dazzlepod.com' to find latitude and longitude
 SLEEP_SECONDS = 2;
 
-# a good explanation of how traceroute works: https://www.youtube.com/watch?v=G05y9UKT69s
-# add maxttl=100 or more if you want to traceroute even deeper.
-#'res' -- results from traceroute 
-res, _ = traceroute(ip,maxttl=64,verbose = 0)
-# will store retrieved IPs here.
-ips = []
-
-# going through the traceroute results and extracting IP addresses into the array
-for item in res.get_trace()[ip]:
-    try:
-        hopping_ip = res.get_trace()[ip][item][0]
-        if hopping_ip not in ips:
-            ips.append(hopping_ip)
-    except IndexError:
-        pass
-    
 #find coordinates and plot them   
 find_and_plot_coordinates()
