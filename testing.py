@@ -73,8 +73,7 @@ def plot_lat_long(lats, longs):
         gmap.coloricon = gmap.coloricon.replace('/', '\\')
         gmap.coloricon = gmap.coloricon.replace('\\', '\\\\')
      
-    gmap.scatter( lats, longs, '#FF00FF', 
-                              size = 40000, marker = False) 
+    gmap.plot(lats, longs, color='b')
     # get the currentdirectory
     cwd = os.getcwd()
     # saving the map as an HTML into the project directory
