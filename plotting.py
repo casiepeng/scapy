@@ -16,7 +16,7 @@ from gmplot import gmplot
 
 # Hostname input stuff
 if (len(sys.argv) != 2):
-    hostname = "mn.gov"
+    hostname = "aubg.bg"
 else:
     hostname = sys.argv[1]
 
@@ -71,9 +71,7 @@ def plot_lat_long(lats, longs):
         gmap.coloricon = gmap.coloricon.replace('\\', '\\\\')
     
     gmap.plot(lats, longs, color='b') 
-    gmap.scatter(lats, longs, '#FF00FF', 
-                              size = 40000, marker = False) 
-    # get the currentdirectory
+
     cwd = os.getcwd()
     # saving the map as an HTML into the project directory
     gmap.draw("traceroute.html")
@@ -89,7 +87,6 @@ def find_and_plot_coordinates(ips):
     for ip in ips:
 # tool for finding latitutde and longitude of ip address
         url = f"http://dazzlepod.com/ip/{ip}.json"
-        print(f"Getting data from IP: {ip}")
         response = requests.get(url)
 
         if response.status_code == 200:
@@ -111,11 +108,7 @@ def find_and_plot_coordinates(ips):
     # pausing for 2 seconds to make sure we don't get banned by 'dazzlepod.com'
     time.sleep(SLEEP_SECONDS)
        
-    #calls function to plot the lats and longs
-    if lats and longs:
-        plot_lat_long(lats, longs)
-    else:
-        print("No valid coordinates to plot.")
+    plot_lat_long(lats, longs)
 
 
 #will need to slow down the request frequency from 'dazzlepod.com' to find latitude and longitude
