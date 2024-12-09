@@ -92,12 +92,6 @@ def plot_lat_long(lats, longs):
 
 #will need to slow down the request frequency from 'dazzlepod.com' to find latitude and longitude
 SLEEP_SECONDS = 2;
-#hostname to traceroute to, hardcoded for in-class example
-#default website
-hostname = 'www.aubg.bg'
-
-# converting request hostname into IP address
-ip = socket.gethostbyname(hostname)
 
 # a good explanation of how traceroute works: https://www.youtube.com/watch?v=G05y9UKT69s
 # add maxttl=100 or more if you want to traceroute even deeper.
