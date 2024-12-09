@@ -66,7 +66,7 @@ def plot_lat_long(lats, longs):
         else:
             the_color = 'b'
 
-        gmap.marker(lats[i + 2], longs[i + 2], color=the_color, label=str(i + 2))
+        gmap.marker(lats[i], longs[i], color=the_color, label=str(i + 2))
 
     #Handle path issue for windows, so that marker images can optionally be found using gmplot
     if ":\\" in gmap.coloricon:
