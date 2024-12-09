@@ -84,32 +84,40 @@ def plot_lat_long(lats, longs):
     webbrowser.open("file:///" + cwd +"/traceroute.html")
 
 def find_and_plot_coordinates(ips):
-    
-    # tool for finding latitutde and longitude of ip address
-    url = f"http://dazzlepod.com/ip/{ip}.json"
-    
-    # debugging the URLs
-    print(url)
-    response = requests.get(url)
-    data = response.json()
     unique_coords = set() # stores unique lat long pairs
     lat = []
-    long = []
+    long = []  
+    
+    for ip in ips:
+# tool for finding latitutde and longitude of ip address
+        url = f"http://dazzlepod.com/ip/{ip}.json"
+        print(f"Getting data from IP: {ip}")
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            data = response.json()
+
+
     # making sure the wesbsite gave us lat and long
-    if 'latitude' in data and 'longitude' in data:
-        coords = (data['latitude'], data['longitude']) # makes a set coordinate pair
-        print(coords)
-        if coords not in unique_coords:
-            unique_coords.add(coords)
-            lat.append(data['latitude'])
-            long.append(data['longitude'])
+            if 'latitude' in data and 'longitude' in data:
+                coords = (data['latitude'], data['longitude']) # makes a set coordinate pair
+                
+                if coords not in unique_coords:
+                    unique_coords.add(coords)
+                    lat.append(data['latitude'])
+                    long.append(data['longitude'])
+
+        else:
+            print(f"Failed to get data for IP: {IP}")
                          
     # pausing for 2 seconds to make sure we don't get banned by 'dazzlepod.com'
     time.sleep(SLEEP_SECONDS)
        
     #calls function to plot the lats and longs
-    
-    plot_lat_long(lat, long)
+    if lat and long:
+        plot_lat_long(lat, long)
+    else:
+        print("No valid coordinates to plot.")
 
 
 #will need to slow down the request frequency from 'dazzlepod.com' to find latitude and longitude

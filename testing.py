@@ -84,36 +84,44 @@ def plot_lat_long(lats, longs):
     webbrowser.open("file:///" + cwd +"/traceroute.html")
 
 def find_and_plot_coordinates(ips):
-    
-    unique_coords = set() # stores unique lat long pairs
-    lat = []
-    long = []
+    unique_coords = set()  # Stores unique lat/long pairs
+    lat = []  # List to store latitudes
+    long = []  # List to store longitudes
 
     for ip in ips:
-    # tool for finding latitutde and longitude of ip address
         url = f"http://dazzlepod.com/ip/{ip}.json"
+        print(f"Fetching data for IP: {ip} -> URL: {url}")
+        response = requests.get(url)
 
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()
+        if response.status_code == 200:
+            data = response.json()
+            print(f"Response for {ip}: {data}")
 
-    # making sure the wesbsite gave us lat and long
-    if 'latitude' in data and 'longitude' in data:
-        coords = (data['latitude'], data['longitude']) # makes a set coordinate pair
+            # Check if latitude and longitude exist in the response
+            if 'latitude' in data and 'longitude' in data:
+                coords = (data['latitude'], data['longitude'])
 
-        if coords not in unique_coords:
-            unique_coords.add(coords)
-            lat.append(data['latitude'])
-            long.append(data['longitude'])
+                # Add to unique coordinates and lat/long lists
+                if coords not in unique_coords:
+                    unique_coords.add(coords)
+                    lat.append(data['latitude'])
+                    long.append(data['longitude'])
+        else:
+            print(f"Failed to fetch data for IP: {ip} (HTTP {response.status_code})")
+
+        # Pause to avoid rate-limiting
+        time.sleep(SLEEP_SECONDS)
+
+    # Debug: Print all coordinates
+    print("All collected latitudes:", lat)
+    print("All collected longitudes:", long)
+
+    # Calls function to plot the latitudes and longitudes
+    if lat and long:
+        plot_lat_long(lat, long)
     else:
-        print(f"Failed to get data from IP: {ip}")
-                         
-    # pausing for 2 seconds to make sure we don't get banned by 'dazzlepod.com'
-    time.sleep(SLEEP_SECONDS)
-       
-    #calls function to plot the lats and longs
-    
-    plot_lat_long(lat, long)
+        print("No valid coordinates found to plot.")
+
 
 
 #will need to slow down the request frequency from 'dazzlepod.com' to find latitude and longitude
