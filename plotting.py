@@ -3,31 +3,29 @@
 @author: Madison Davidson, Casie Peng
 @PID: mzddie, casiepeng
 @assignment: Class Project
+@hostname: bundesregierung.de
 """
-
+# Importing important stuff.... we stole from Round1, 2, and 3!
 import requests, time, json, os
 import webbrowser, sys
-
-# scapy is an extensive networking library for python. We are going to be using its 'traceroute()'
 from scapy.layers.inet import socket
 from scapy.layers.inet import traceroute
-# this is to plot our lat/long data onto Google Maps  https://pypi.org/project/gmplot/
 from gmplot import gmplot   
 
-# Hostname input stuff
+# Hostname input stuff, basically use default host if commandline is not input
 if (len(sys.argv) != 2):
     hostname = "aubg.bg"
 else:
     hostname = sys.argv[1]
 
-# converts host to ip
+# Converts host into its corresponding IP address
 ip = socket.gethostbyname(hostname)
-
-res, _ = traceroute(ip,maxttl=64,verbose = 0)
-# will store retrieved IPs here.
+# Uses scapy traceroute function to map out the network hops
+res, _ = traceroute(ip, maxttl=64, verbose=0)
+# Empty list of IP addresses
 ips = []
 
-# going through the traceroute results and extracting IP addresses into the array
+# Extracts the IP adresses from traceroute results, avoids duplicates, and adds the hop's IP to the list- and then ignores cases where no IP is recorded.
 for item in res.get_trace()[ip]:
     try:
         hopping_ip = res.get_trace()[ip][item][0]
@@ -36,22 +34,26 @@ for item in res.get_trace()[ip]:
     except IndexError:
         pass
 
-
-# plots 3 coordinates onto Google Maps - hardcoded for in-class example
+# Function to plot coordinates using Google Maps
 def plot_lat_long(lats, longs):
+    url = f"http://dazzlepod.com/ip/me.json" # Gets user's current ip to use for initial
+    response = requests.get(url) # uses a get request for the ip lookup
+    data = response.json() # parses the json response
+    ilat = data.get('latitude', None) # extracts lat and long data from the json
+    ilong = data.get('longitude', None)
 
-    #initializing
-    url = f"http://dazzlepod.com/ip/me.json"
-    response = requests.get(url)
-    data = response.json()
-    lat = data['latitude']
-    long = data['longitude']
-    gmap = gmplot.GoogleMapPlotter(lat, long, 3)
-    gmap.marker(lat, long, color='red', label='1')
-   
-    for i in range (len(lats)):
+    # Adds users initial location as the starting point for the maps markers
+    lats.insert(0, ilat)
+    longs.insert(0,ilong)
+
+    # Initializes the map with starting location
+    gmap = gmplot.GoogleMapPlotter(lats[0], longs[0], 3)
+    gmap.marker(lats[0], longs[0], color='red', label='1') # Marks starting point
+
+    # Loops through list of coords and adds markers for each destination
+    for i in range(len(lats)):
         the_color = 'red'
-
+        # Cycling colors for unique markers
         if i % 5 == 0:
             the_color = 'm'
         elif i % 5 == 1:
@@ -62,57 +64,57 @@ def plot_lat_long(lats, longs):
             the_color = 'g'
         else:
             the_color = 'b'
+        
+        gmap.marker(lats[i], longs[i], color=the_color, label=str(i + 1))
 
-        gmap.marker(lats[i], longs[i], color=the_color, label=str(i + 2))
-
-    #Handle path issue for windows, so that marker images can optionally be found using gmplot
     if ":\\" in gmap.coloricon:
         gmap.coloricon = gmap.coloricon.replace('/', '\\')
         gmap.coloricon = gmap.coloricon.replace('\\', '\\\\')
-    
-    gmap.plot(lats, longs, color='b') 
+    # Connects all markers with a line/trail
+    gmap.plot(lats, longs, color='b', edge_width=2.5)
 
+    # Saves the map created as an HTML file which is then opened in the user's default browser
     cwd = os.getcwd()
-    # saving the map as an HTML into the project directory
     gmap.draw("traceroute.html")
-    
-    # opening the HTML via default browser
-    webbrowser.open("file:///" + cwd +"/traceroute.html")
+    webbrowser.open("file:///" + cwd + "/traceroute.html")
 
+# Function to find lat and long of IP addresses and plots them
 def find_and_plot_coordinates(ips):
-    unique_coords = set() # stores unique lat long pairs
-    lats = []
-    longs = []  
-    
-    for ip in ips:
-# tool for finding latitutde and longitude of ip address
-        url = f"http://dazzlepod.com/ip/{ip}.json"
-        response = requests.get(url)
+    # Initializing empty set and arrays
+    unique_coords = set() 
+    lat = [] 
+    long = []  
 
+    # Loops through each collected IP address
+    for ip in ips:
+        # API usage for each IP
+        url = f"http://dazzlepod.com/ip/{ip}.json"
+        print(f"Retrieving data for IP: {ip}") # Confirmation on which IP is being used
+        response = requests.get(url) #
+
+        # If request is successful, parse and collect the json data
         if response.status_code == 200:
             data = response.json()
-
-
-    # making sure the wesbsite gave us lat and long
+            # Check if latitude and longtitute exist in the given json data
             if 'latitude' in data and 'longitude' in data:
-                coords = (data['latitude'], data['longitude']) # makes a set coordinate pair
-                
-                if coords not in unique_coords:
-                    unique_coords.add(coords)
-                    lats.append(data['latitude'])
-                    longs.append(data['longitude'])
+                latitude = data['latitude']
+                longitude = data['longitude']
 
-        else:
-            print(f"Failed to get data for IP: {ip}")
-                         
-    # pausing for 2 seconds to make sure we don't get banned by 'dazzlepod.com'
-    time.sleep(SLEEP_SECONDS)
-       
-    plot_lat_long(lats, longs)
+                # Checks to make sure lat and long are real values to avoid NoneType errors
+                if isinstance(latitude, (float, int)) and isinstance(longitude, (float, int)):
+                    coords = (latitude, longitude)
 
+                    # Adds the coords to the list if they are not duplicates
+                    if coords not in unique_coords:
+                        unique_coords.add(coords)
+                        lat.append(latitude)
+                        long.append(longitude)
+        # Pauses to prevent API rate-limits
+        time.sleep(SLEEP_SECONDS)
+    # Plots the coords
+    plot_lat_long(lat, long)
+# Defines sleeper seconds
+SLEEP_SECONDS = 2
 
-#will need to slow down the request frequency from 'dazzlepod.com' to find latitude and longitude
-SLEEP_SECONDS = 2;
-
-#find coordinates and plot them   
+# Finally calls the function to plot all traceroute hops and create and open a map
 find_and_plot_coordinates(ips)
